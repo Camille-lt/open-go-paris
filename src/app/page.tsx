@@ -2,64 +2,51 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    /* Fond de page blanc pur comme sur ton image */
+    <div className="flex flex-col min-h-screen bg-white font-sans">
+      
+      {/* Header bleu avec arrondis prononcés en bas */}
+      <header className="bg-brand-blue pt-12 pb-16 px-6 rounded-b-[50px] relative">
+        <div className="max-w-md mx-auto">
+          <div className="flex justify-between items-start">
+            <h1 className="text-3xl font-extrabold text-white tracking-tight">
+              OPEN GO PARIS
+            </h1>
+            {/* Badge jaune "Mes Events" */}
+            <div className="bg-brand-yellow text-brand-dark px-3 py-1 rounded-xl flex items-center gap-2 font-bold text-sm">
+              Mes Events 📅
+            </div>
+          </div>
+
+          <h2 className="text-white mt-6 text-lg font-semibold">
+            Que Faire à Paris ?
+          </h2>
+
+          {/* Barre de recherche blanche */}
+          <div className="mt-4 bg-white rounded-full p-4 shadow-sm flex justify-between items-center">
+            <span className="text-gray-400">SEARCH</span>
+            <span className="text-gray-400">🔍</span>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </header>
+
+      {/* Zone de contenu principale */}
+      <main className="flex-1 p-6">
+        <div className="max-w-md mx-auto">
+          {/* Titre de section en bleu comme sur l'image */}
+          <h2 className="text-brand-blue text-2xl font-bold mb-6">Type</h2>
+
+          {/* Ta carte de test mise à jour */}
+          <div className="p-6 bg-white rounded-3xl shadow-md border border-slate-100">
+            <h3 className="text-brand-dark text-lg font-bold">Titre</h3>
+            <p className="text-brand-gray text-xs mt-2 leading-relaxed">
+              Vérification visuelle : Le fond est blanc, le header est bleu avec le titre en blanc, 
+              et le mot "Type" juste au-dessus est bien en bleu.
+            </p>
+          </div>
         </div>
       </main>
+      
     </div>
   );
 }
