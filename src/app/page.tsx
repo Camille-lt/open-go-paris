@@ -1,53 +1,126 @@
 "use client";
+
+import { useEffect, useState } from "react";
 import { Button } from "./components/button";
 import { CalendarCheck } from 'lucide-react';
 import { SearchBar } from "./components/searchbar";
-export default function Home() {
-  return (
-    /* Fond de page blanc pur comme sur ton image */
-    <div className="flex flex-col min-h-screen bg-white font-sans">
+import { EventCard } from "./components/EventCard";
 
-      {/* Header bleu avec arrondis prononcés en bas */}
-      <header className="bg-brand-blue pt-12 pb-24 px-6 rounded-b-[50px] relative h-auto">        <div className="max-w-md mx-auto">
-        <div className="flex justify-between items-start">
-          <h1 className="text-2xl font-extrabold text-white tracking-tight">
-            OPEN GO PARIS
-          </h1>
-          <div className="flex">
-            <Button
-              label={
-                <div className="flex items-center gap-2">
-                  Mes Events <CalendarCheck size={18} />
-                </div>
-              }
-              onClick={() => console.log("Vers mes events")}
-            />
+export default function Home() {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [activeFilter, setActiveFilter] = useState("All");
+  // 1. AJOUT de l'état pour la recherche textuelle
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filters = ['Théâtre', 'Concert', 'Balade urbaine', 'Sport', 'Danse', 'Loisir', 'Atelier', 'Littérature', 'Santé'];
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch(
+          "https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/que-faire-a-paris-/records?limit=100"
+        );
+        const data = await response.json();
+        if (data?.results) setEvents(data.results);
+      } catch (error) {
+        console.error("Erreur API:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchEvents();
+  }, []);
+
+  const getFilteredEvents = (categoryName: string) => {
+    const filter = categoryName.toLowerCase();
+    return events.filter((event: any) => {
+      const tags = event.qfap_tags?.toLowerCase() || "";
+      const title = event.title?.toLowerCase() || "";
+
+      if (filter === "sport" || filter === "santé") {
+        return tags.includes("sport") || tags.includes("santé") || tags.includes("bien-être");
+      }
+      if (filter === "loisir" || filter === "atelier") {
+        return tags.includes("loisir") || tags.includes("atelier") || title.includes("atelier");
+      }
+      if (filter === "danse") return tags.includes("danse") || title.includes("danse");
+      if (filter === "littérature") return tags.includes("littérature") || tags.includes("bibliothèques");
+      if (filter === "balade urbaine") return tags.includes("balade") || tags.includes("visite guidée");
+      if (filter === "théâtre") return tags.includes("théâtre");
+      if (filter === "concert") return tags.includes("concert") || tags.includes("musique");
+      
+      return tags.includes(filter);
+    });
+  };
+
+  return (
+    <div className="flex flex-col min-h-screen bg-white">
+      <header className="bg-brand-blue pt-12 pb-28 px-6 rounded-b-[50px] relative">
+        <div className="max-w-md mx-auto flex flex-col">
+          <div className="flex justify-between items-start">
+            <h1 className="text-2xl font-extrabold text-white">OPEN GO PARIS</h1>
+            <Button label={<div className="flex items-center gap-2">Mes Events <CalendarCheck size={16} /></div>} />
           </div>
+          <h2 className="text-white mt-10 mb-2 font-semibold text-xl">Que Faire à Paris ?</h2>
+          
+          {/* 2. CORRECTION : Passage des fonctions à la SearchBar */}
+          <SearchBar 
+            activeFilter={activeFilter} 
+            onFilterChange={(cat) => {
+              setActiveFilter(cat);
+              setSearchQuery(""); // On vide la recherche si on clique sur un bouton
+            }}
+            onSearchChange={(val) => setSearchQuery(val)} // Met à jour searchQuery quand on tape
+          />
         </div>
-        <p className="relative z-10 text-white mt-10 mb-4 font-semibold text-xl block">            Que Faire à Paris ?
-        </p>
-        {/* Barre de recherche blanche */}
-        < SearchBar />
-      </div>
       </header>
 
-      {/* Zone de contenu principale */}
-      <main className="flex-1 p-6">
-        <div className="max-w-md mx-auto">
-          {/* Titre de section en bleu comme sur l'image */}
-          <h2 className="text-brand-blue text-2xl font-bold mb-6">Type</h2>
+      <main className="py-8">
+        {loading ? (
+          <p className="text-center py-10 animate-pulse text-brand-blue">Chargement...</p>
+        ) : (
+          <div className="flex flex-col gap-10">
+            {filters.map((category) => {
+              const categoryEvents = getFilteredEvents(category);
+              
+              // 3. LOGIQUE DE VISIBILITÉ :
+              // On affiche la section si :
+              // - On est en mode "All"
+              // - OU le filtre actif correspond à cette catégorie
+              // - OU ce qu'on tape dans la barre correspond au nom de la catégorie
+              const isFilterActive = activeFilter === "All" || activeFilter === category;
+              const isMatchingSearch = searchQuery !== "" && category.toLowerCase().includes(searchQuery.toLowerCase());
 
-          {/* Ta carte de test mise à jour */}
-          <div className="p-6 bg-white rounded-3xl shadow-md border border-slate-100">
-            <h3 className="text-brand-dark text-lg font-bold">Titre</h3>
-            <p className="text-brand-gray text-xs mt-2 leading-relaxed">
-              Vérification visuelle : Le fond est blanc, le header est bleu avec le titre en blanc,
-              et le mot "Type" juste au-dessus est bien en bleu.
-            </p>
+              if ((!isFilterActive && !isMatchingSearch) || categoryEvents.length === 0) return null;
+
+              return (
+                <section key={category} className="flex flex-col">
+                  <h2 className="px-6 text-brand-blue text-xl font-bold mb-4 uppercase tracking-wider">
+                    {category}
+                  </h2>
+                  
+                  <div className="flex gap-6 overflow-x-auto no-scrollbar px-6 pb-4">
+                    {categoryEvents.map((event: any) => (
+                      <div key={event.id || event.event_id} className="min-w-[280px] max-w-[280px]">
+                        <EventCard 
+                          title={event.title}
+                          image={event.cover_url}
+                          description={event.lead_text}
+                          category={event.qfap_tags?.split(';')[0]}
+                          price={event.price_type}
+                          priceDetail={event.price_detail}
+                          audience={event.audience}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              );
+            })}
           </div>
-        </div>
+        )}
       </main>
-
     </div>
   );
 }
