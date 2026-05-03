@@ -5,6 +5,7 @@ import { Button } from "./components/button";
 import { CalendarCheck } from 'lucide-react';
 import { SearchBar } from "./components/searchbar";
 import { EventCard } from "./components/EventCard";
+import Link from "next/link";
 
 export default function Home() {
   const [events, setEvents] = useState([]);
@@ -49,7 +50,7 @@ export default function Home() {
       if (filter === "balade urbaine") return tags.includes("balade") || tags.includes("visite guidée");
       if (filter === "théâtre") return tags.includes("théâtre");
       if (filter === "concert") return tags.includes("concert") || tags.includes("musique");
-      
+
       return tags.includes(filter);
     });
   };
@@ -60,13 +61,19 @@ export default function Home() {
         <div className="max-w-md mx-auto flex flex-col">
           <div className="flex justify-between items-start">
             <h1 className="text-2xl font-extrabold text-white">OPEN GO PARIS</h1>
-            <Button label={<div className="flex items-center gap-2">Mes Events <CalendarCheck size={16} /></div>} />
+            <Link href="/reservations">
+              <Button label={
+                <div className="flex items-center gap-2">
+                  Mes Events <CalendarCheck size={16} />
+                </div>
+              } />
+            </Link>
           </div>
           <h2 className="text-white mt-10 mb-2 font-semibold text-xl">Que Faire à Paris ?</h2>
-          
+
           {/* 2. CORRECTION : Passage des fonctions à la SearchBar */}
-          <SearchBar 
-            activeFilter={activeFilter} 
+          <SearchBar
+            activeFilter={activeFilter}
             onFilterChange={(cat) => {
               setActiveFilter(cat);
               setSearchQuery(""); // On vide la recherche si on clique sur un bouton
@@ -83,7 +90,7 @@ export default function Home() {
           <div className="flex flex-col gap-10">
             {filters.map((category) => {
               const categoryEvents = getFilteredEvents(category);
-              
+
               // 3. LOGIQUE DE VISIBILITÉ :
               // On affiche la section si :
               // - On est en mode "All"
@@ -99,11 +106,14 @@ export default function Home() {
                   <h2 className="px-6 text-brand-blue text-xl font-bold mb-4 uppercase tracking-wider">
                     {category}
                   </h2>
-                  
+
                   <div className="flex gap-6 overflow-x-auto no-scrollbar px-6 pb-4">
                     {categoryEvents.map((event: any) => (
                       <div key={event.id || event.event_id} className="min-w-[280px] max-w-[280px]">
-                        <EventCard 
+                        <EventCard
+                          // CRUCIAL : C'est cette ligne qui manque ou qui est mal nommée chez toi
+                          id={event.id || event.event_id}
+
                           title={event.title}
                           image={event.cover_url}
                           description={event.lead_text}
