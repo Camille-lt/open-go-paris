@@ -57,20 +57,22 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
-      <header className="bg-brand-blue pt-12 pb-28 px-6 rounded-b-[50px] relative">
-        <div className="max-w-md mx-auto flex flex-col">
+      <header className="bg-brand-blue pt-10 pb-10 px-6 rounded-b-[50px] relative">
+        <div className="ml-5rem mx-auto flex flex-col">
           <div className="flex justify-between items-start">
             <h1 className="text-2xl font-extrabold text-white">OPEN GO PARIS</h1>
             <Link href="/reservations">
               <Button label={
-                <div className="flex items-center gap-2">
-                  Mes Events <CalendarCheck size={16} />
+                <div className="flex items-center gap-1 sm:gap-2 whitespace-nowrap text-xs sm:text-sm md:text-base">
+                  <span>Mes Events</span>
+                  <CalendarCheck size={14} className="sm:w-4 sm:h-4" />
                 </div>
               } />
             </Link>
           </div>
-          <h2 className="text-white mt-10 mb-2 font-semibold text-xl">Que Faire à Paris ?</h2>
-
+         <p className="w-full max-w-md mx-auto text-blue-200 text-lg font-bold uppercase tracking-widest mt-5 block">
+  Que faire à Paris ?
+</p>
           {/* 2. CORRECTION : Passage des fonctions à la SearchBar */}
           <SearchBar
             activeFilter={activeFilter}
@@ -106,12 +108,10 @@ export default function Home() {
                   <h2 className="px-6 text-brand-blue text-xl font-bold mb-4 uppercase tracking-wider">
                     {category}
                   </h2>
-
                   <div className="flex gap-6 overflow-x-auto no-scrollbar px-6 pb-4">
                     {categoryEvents.map((event: any) => (
                       <div key={event.id || event.event_id} className="min-w-[280px] max-w-[280px]">
                         <EventCard
-                          // CRUCIAL : C'est cette ligne qui manque ou qui est mal nommée chez toi
                           id={event.id || event.event_id}
 
                           title={event.title}
