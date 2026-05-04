@@ -23,11 +23,30 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
-    </html>
+<html
+  lang="fr"
+  className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+>
+  <body className="min-h-full flex flex-col">
+    {/* Le contenu principal prend tout l'espace disponible (flex-1) */}
+    <main className="flex-1">
+      {children}
+    </main>
+    {/* Le footer reste en bas grâce au flex-col du body */}
+    <footer className="bg-brand-blue py-8 px-6 border-t rounded-t-[50px] border-blue-400"> 
+      <div className="ml-5 mr-5 text-center mx-auto">
+        <h1 className="text-white font-extrabold tracking-tight uppercase">
+          OPEN GO PARIS
+        </h1>
+        <p className="text-white ">
+          API Opendata.paris - Que Faire à Paris ? - Evènements et activités
+        </p>
+        <p className="text-blue-200 text-[10px] mt-2 uppercase tracking-widest">
+          © by Camille LEBIGOT
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>
   );
 }
