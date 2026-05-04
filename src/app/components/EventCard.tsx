@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "./button";
 
 interface EventCardProps {
@@ -32,32 +32,70 @@ export const EventCard = ({
   priceDetail, 
   audience 
 }: EventCardProps) => {
+  const [isReserved, setIsReserved] = useState(false);
   
   const cleanPrice = stripHtml(priceDetail || "");
   const cleanAudience = stripHtml(audience || "Tout public");
 
-  const handleReserve = () => {
-    // 1. SÉCURITÉ : On vérifie que l'ID existe bien
-    if (!id) {
-      console.error("ID manquant pour l'événement:", title);
+  // Synchronisation avec le Backend au chargement
+  useEffect(() => {
+    const checkStatus = async () => {
+      try {
+        const res = await fetch("http://127.0.0.1:8000/reservations");
+        const reservedIds: string[] = await res.json();
+        if (reservedIds.includes(String(id))) {
+          setIsReserved(true);
+        }
+      } catch (err) {
+        console.error("Erreur de connexion au backend", err);
+      }
+    };
+    checkStatus();
+  }, [id]);
+
+  const handleReserve = async () => {
+    if (!id) return;
+
+    if (isReserved) {
+      // Optionnel : Gérer l'annulation
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/reservations/${id}`, {
+          method: "DELETE",
+        });
+        if (response.ok) {
+          setIsReserved(false);
+          alert("🗑️ Réservation annulée.");
+        }
+      } catch (error) {
+        alert("Erreur lors de l'annulation.");
+      }
       return;
     }
 
-    // 2. Récupération et conversion systématique en String
-    const rawData = localStorage.getItem("my_reservations");
-    const savedReservations = rawData ? JSON.parse(rawData) : [];
-    const idToSave = String(id); 
+    // Appel au Backend FastAPI
+    try {
+      const response = await fetch("http://127.0.0.1:8000/reservations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ event_id: String(id) }),
+      });
 
-    // 3. Vérification de présence
-    if (!savedReservations.includes(idToSave)) {
-      const newReservations = [...savedReservations, idToSave];
-      localStorage.setItem("my_reservations", JSON.stringify(newReservations));
-      alert("🎉 Ajouté à vos réservations !");
-    } else {
-      alert("Vous avez déjà réservé cet événement.");
+      const data = await response.json();
+
+      if (data.status === "success") {
+        setIsReserved(true);
+        alert("🎉 Ajouté à la base Neon !");
+      } else if (data.status === "already_exists") {
+        setIsReserved(true);
+        alert("Déjà réservé.");
+      }
+    } catch (error) {
+      console.error("Impossible de joindre le serveur Python:", error);
+      alert("Le backend Python ne répond pas.");
     }
   };
-
+console.log(title)
+console.log('COUCOUUUUUUUUUU')
   return (
     <div className="bg-white rounded-[30px] shadow-sm overflow-hidden border border-gray-100 flex flex-col h-full">
       <div className="relative h-48">
@@ -66,7 +104,6 @@ export const EventCard = ({
             {category}
           </span>
         )}
-        {/* On ajoute une image par défaut au cas où cover_url est vide */}
         <img 
           src={image || "https://images.unsplash.com/photo-1513151233558-d860c5398176"} 
           alt={title} 
@@ -89,7 +126,10 @@ export const EventCard = ({
           </div>
 
           <div onClick={handleReserve}>
-            <Button label="Réserver" />
+            <Button 
+              label={isReserved ? "Annuler" : "Réserver"} 
+              variant={isReserved ? "secondary" : "primary"} // Si ton composant Button le gère
+            />
           </div>
         </div>
       </div>
