@@ -57,8 +57,8 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
-      <header className="bg-brand-blue pt-10 pb-10 px-6 rounded-b-[50px] relative">
-        <div className="ml-5rem mx-auto flex flex-col">
+<header className="bg-brand-blue pt-5 pb-5 px-5 sm:pt-10 sm:pb-10 sm:px-6 rounded-b-[50px] relative">
+          <div className="ml-5rem mx-auto flex flex-col">
           <div className="flex justify-between items-start">
             <h1 className="text-2xl font-extrabold text-white">OPEN GO PARIS</h1>
             <Link href="/reservations">
