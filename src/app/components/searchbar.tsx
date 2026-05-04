@@ -11,8 +11,7 @@ interface SearchBarProps {
 }
 
 export const SearchBar = ({ activeFilter, onFilterChange, onSearchChange }: SearchBarProps) => {
-  const filters = ['All', 'Théâtre', 'Balade urbaine', 'Concert', 'Sport & bien-être', 'Danse', 'Loisir', 'Atelier', 'Littérature', 'Santé'];
-
+const filters = ['All', 'Théâtre', 'Balade urbaine', 'Concert', 'Sport & bien-être', 'Danse', 'Loisir & Atelier', 'Littérature'];
   return (
     <div className="w-full max-w-md mx-auto">
       <div className="relative mt-4">
