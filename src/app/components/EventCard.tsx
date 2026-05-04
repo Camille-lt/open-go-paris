@@ -12,6 +12,7 @@ interface EventCardProps {
   price?: string;
   priceDetail?: string;
   audience?: string;
+  onUnreserve?: (id: string) => void; // Définit la fonction de rappel
 }
 
 const stripHtml = (html: string) => {
@@ -30,7 +31,8 @@ export const EventCard = ({
   category, 
   price, 
   priceDetail, 
-  audience 
+  audience,
+  onUnreserve // Récupération de la fonction passée par le parent
 }: EventCardProps) => {
   const [isReserved, setIsReserved] = useState(false);
   
@@ -57,13 +59,16 @@ export const EventCard = ({
     if (!id) return;
 
     if (isReserved) {
-      // Optionnel : Gérer l'annulation
       try {
         const response = await fetch(`http://127.0.0.1:8000/reservations/${id}`, {
           method: "DELETE",
         });
         if (response.ok) {
           setIsReserved(false);
+          // MISE À JOUR RÉACTIVE : On prévient la page parente
+          if (onUnreserve) {
+            onUnreserve(id);
+          }
           alert("🗑️ Réservation annulée.");
         }
       } catch (error) {
@@ -72,19 +77,22 @@ export const EventCard = ({
       return;
     }
 
-    // Appel au Backend FastAPI
+    // Appel au Backend FastAPI avec l'ID et le TITRE
     try {
       const response = await fetch("http://127.0.0.1:8000/reservations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ event_id: String(id) }),
+        body: JSON.stringify({ 
+            event_id: String(id),
+            event_title: title 
+        }),
       });
 
       const data = await response.json();
 
       if (data.status === "success") {
         setIsReserved(true);
-        alert("🎉 Ajouté à la base Neon !");
+        alert(`🎉 ${title} ajouté à la base Neon !`);
       } else if (data.status === "already_exists") {
         setIsReserved(true);
         alert("Déjà réservé.");
@@ -94,8 +102,7 @@ export const EventCard = ({
       alert("Le backend Python ne répond pas.");
     }
   };
-console.log(title)
-console.log('COUCOUUUUUUUUUU')
+
   return (
     <div className="bg-white rounded-[30px] shadow-sm overflow-hidden border border-gray-100 flex flex-col h-full">
       <div className="relative h-48">
@@ -128,7 +135,7 @@ console.log('COUCOUUUUUUUUUU')
           <div onClick={handleReserve}>
             <Button 
               label={isReserved ? "Annuler" : "Réserver"} 
-              variant={isReserved ? "secondary" : "primary"} // Si ton composant Button le gère
+              variant={isReserved ? "secondary" : "primary"} 
             />
           </div>
         </div>
