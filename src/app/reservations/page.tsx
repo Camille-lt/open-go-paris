@@ -13,42 +13,43 @@ export default function ReservationsPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    const fetchReserved = async () => {
-      // 1. Récupération sécurisée
-      const rawData = localStorage.getItem("my_reservations");
-      const savedIds = rawData ? JSON.parse(rawData) : [];
-      
-      console.log("1. IDs dans le storage :", savedIds);
-
-      if (savedIds.length === 0) {
-        setLoading(false);
-        return;
-      }
-
+    const fetchReservedFromBackend = async () => {
+      setLoading(true);
       try {
-        // 2. Fetch de l'API (on monte à 100 pour être sûr de trouver les cartes)
-        const response = await fetch("https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/que-faire-a-paris-/records?limit=100");
-        const data = await response.json();
+        // 1. RÉCUPÉRATION DEPUIS TON BACKEND PYTHON (NEON)
+        const responseBack = await fetch("http://127.0.0.1:8000/reservations");
+        if (!responseBack.ok) throw new Error("Erreur Backend");
         
-        if (data?.results) {
-          // 3. Filtrage ultra-large (on compare des Strings pour éviter les bugs)
-          const filtered = data.results.filter((event: any) => {
-            const id1 = String(event.id);
-            const id2 = String(event.event_id);
-            return savedIds.some((savedId: string) => String(savedId) === id1 || String(savedId) === id2);
+        const savedIds: string[] = await responseBack.json();
+        console.log("IDs récupérés depuis Neon :", savedIds);
+
+        if (savedIds.length === 0) {
+          setReservedEvents([]);
+          setLoading(false);
+          return;
+        }
+
+        // 2. RÉCUPÉRATION DES DÉTAILS DEPUIS L'API PARIS
+        const responseParis = await fetch("https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/que-faire-a-paris-/records?limit=100");
+        const dataParis = await responseParis.json();
+        
+        if (dataParis?.results) {
+          // 3. Filtrage en comparant les IDs de Neon avec ceux de Paris
+          const filtered = dataParis.results.filter((event: any) => {
+            const idStr = String(event.id || event.event_id);
+            return savedIds.includes(idStr);
           });
           
-          console.log("2. Événements correspondants trouvés :", filtered.length);
           setReservedEvents(filtered);
         }
       } catch (error) {
-        console.error("Erreur API :", error);
+        console.error("Erreur lors du fetch des réservations :", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchReserved();
+    fetchReservedFromBackend();
   }, []);
 
   return (
@@ -59,7 +60,7 @@ export default function ReservationsPage() {
             <Link href="/" className="p-2 -ml-2">
               <ArrowLeft size={28} strokeWidth={3} />
             </Link>
-            <h1 className="text-2xl font-extrabold tracking-tight">MES RÉSERVATIONS</h1>
+            <h1 className="text-2xl font-extrabold tracking-tight uppercase">Mes réservations Neon</h1>
           </div>
           
           <SearchBar 
@@ -75,14 +76,14 @@ export default function ReservationsPage() {
           {loading ? (
             <div className="flex flex-col items-center py-20">
               <div className="w-10 h-10 border-4 border-brand-blue border-t-transparent rounded-full animate-spin mb-4"></div>
-              <p className="text-brand-blue font-bold">Récupération de vos favoris...</p>
+              <p className="text-brand-blue font-bold">Connexion à la base Neon...</p>
             </div>
           ) : reservedEvents.length > 0 ? (
             <div className="grid grid-cols-1 gap-8">
               {reservedEvents.map((event: any) => (
                 <EventCard 
                   key={event.id || event.event_id}
-                  id={event.id || event.event_id} // ON PASSE BIEN L'ID
+                  id={String(event.id || event.event_id)}
                   title={event.title}
                   image={event.cover_url}
                   description={event.lead_text}
@@ -96,7 +97,7 @@ export default function ReservationsPage() {
           ) : (
             <div className="text-center py-20 bg-gray-50 rounded-[40px] px-6 shadow-inner">
               <p className="text-gray-400 font-medium mb-8">
-                On dirait que votre liste est vide...
+                Aucune réservation trouvée dans Neon.
               </p>
               <Link 
                 href="/" 
