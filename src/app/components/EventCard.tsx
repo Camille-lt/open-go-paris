@@ -37,7 +37,7 @@ export const EventCard = ({
   const [isReserved, setIsReserved] = useState(false);
   
   // GESTION DYNAMIQUE DE L'URL : Local si rien n'est défini, sinon Render
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+  const apiUrl = "https://open-go-paris-back.onrender.com";
 
   const cleanPrice = stripHtml(priceDetail || "");
   const cleanAudience = stripHtml(audience || "Tout public");

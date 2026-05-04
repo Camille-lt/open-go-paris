@@ -17,7 +17,7 @@ export default function ReservationsPage() {
       try {
         // GESTION DYNAMIQUE DE L'URL : 
         // Utilise la variable Vercel si elle existe, sinon utilise le local
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+        const apiUrl = "https://open-go-paris-back.onrender.com";
         
         // 1. RÉCUPÉRATION DEPUIS TON BACKEND PYTHON (RENDER OU LOCAL)
         const responseBack = await fetch(`${apiUrl}/reservations`);
