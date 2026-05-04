@@ -6,8 +6,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
 export default function ReservationsPage() {
-  const [reservedEvents, setReservedEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
+const [reservedEvents, setReservedEvents] = useState<any[]>([]);  const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
 
