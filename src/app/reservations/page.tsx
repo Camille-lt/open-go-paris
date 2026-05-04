@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { SearchBar } from "../components/searchbar";
 import { EventCard } from "../components/EventCard";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -54,24 +53,18 @@ export default function ReservationsPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
-      <header className="bg-brand-blue pt-12 pb-28 px-6 rounded-b-[50px] relative">
+      <header className="bg-brand-blue pt-10 px-6 rounded-b-[50px] relative">
         <div className="max-w-md mx-auto">
           <div className="flex items-center gap-4 text-white mb-6">
             <Link href="/" className="p-2 -ml-2">
               <ArrowLeft size={28} strokeWidth={3} />
             </Link>
-            <h1 className="text-2xl font-extrabold tracking-tight uppercase">Mes réservations Neon</h1>
+            <h1 className="text-2xl font-extrabold tracking-tight uppercase">Mes réservations</h1>
           </div>
-          
-          <SearchBar 
-            activeFilter={activeFilter} 
-            onFilterChange={setActiveFilter} 
-            onSearchChange={setSearchQuery} 
-          />
         </div>
       </header>
 
-      <main className="p-6 -mt-10">
+      <main className="p-6 ">
         <div className="max-w-md mx-auto">
           {loading ? (
             <div className="flex flex-col items-center py-20">

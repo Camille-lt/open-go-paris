@@ -1,14 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  /* Couleurs extraites directement de ta maquette */
-  --brand-blue: #354BCF;      /* Le bleu vif du header et du titre "Type" */
-  --brand-yellow: #FDE047;    /* Le jaune des boutons "Réserver" et "Mes Events" */
-  --brand-dark: #1A1A1A;      /* Le noir profond pour les titres des cartes */
-  --brand-gray: #6B7280;      /* Le gris pour le texte de description */
-  
-  /* Variables de structure */
-  --background: #FFFFFF;      /* Fond de page blanc pur comme sur l'image */
+  --brand-blue: #354BCF;
+  --brand-yellow: #FDE047;
+  --brand-dark: #1A1A1A;
+  --brand-gray: #6B7280;
+  --background: #FFFFFF;
   --foreground: var(--brand-dark);
 }
 
@@ -17,12 +14,10 @@
   --color-brand-yellow: var(--brand-yellow);
   --color-brand-dark: var(--brand-dark);
   --color-brand-gray: var(--brand-gray);
-  
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 }
 
-/* On bloque le fond blanc même si l'examinateur est en mode sombre */
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #FFFFFF;
@@ -34,20 +29,54 @@ body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  /* On cache le scroll natif pour garder l'interface propre */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-/* Styles globaux pour coller à la maquette */
-h1 {
-  /* "OPEN GO PARIS" */
-  @apply text-white font-extrabold uppercase;
+body::-webkit-scrollbar {
+  display: none;
 }
 
-h2 {
-  /* "Type" et "Que Faire à Paris ?" */
-  @apply text-brand-blue font-bold;
+/* Styles globaux */
+h1 { @apply text-white font-extrabold uppercase; }
+h2 { @apply text-brand-blue font-bold; }
+h3 { @apply text-brand-dark font-bold; }
+
+/* ---------------------------------------------------------
+   PERSONNALISATION DE LA BARRE DE SCROLL (SimpleBar)
+   --------------------------------------------------------- */
+
+/* 1. ON CACHE LA BARRE VERTICALE (celle à droite de l'écran) */
+.simplebar-track.simplebar-vertical {
+  display: none !important;
+  visibility: hidden !important;
 }
 
-h3 {
-  /* "Titre" dans les cartes */
-  @apply text-brand-dark font-bold;
+/* 2. BARRE HORIZONTALE : Taille fixe et couleur Bleu Clair uniquement */
+.simplebar-track.simplebar-horizontal .simplebar-scrollbar {
+  width: 100px !important;
+  min-width: 100px !important;
+  max-width: 100px !important;
+}
+
+.simplebar-track.simplebar-horizontal .simplebar-scrollbar::before {
+  background-color: #BFDBFE !important; /* Le bleu clair que tu aimes */
+  opacity: 0.9 !important;
+  border-radius: 20px !important;
+  left: 23px !important;
+  right: 23px !important;
+  top: 2px !important;
+  bottom: 2px !important;
+}
+
+/* On garde le bleu clair même au survol pour la cohérence */
+.simplebar-track.simplebar-horizontal .simplebar-scrollbar.simplebar-visible:before {
+  background-color: #BFDBFE !important;
+  opacity: 1 !important;
+}
+
+/* 3. RAIL HORIZONTAL : Invisible */
+.simplebar-track.simplebar-horizontal {
+  background-color: transparent !important;
 }

@@ -12,7 +12,7 @@ interface EventCardProps {
   price?: string;
   priceDetail?: string;
   audience?: string;
-  onUnreserve?: (id: string) => void; // Définit la fonction de rappel
+  onUnreserve?: (id: string) => void;
 }
 
 const stripHtml = (html: string) => {
@@ -32,14 +32,13 @@ export const EventCard = ({
   price, 
   priceDetail, 
   audience,
-  onUnreserve // Récupération de la fonction passée par le parent
+  onUnreserve
 }: EventCardProps) => {
   const [isReserved, setIsReserved] = useState(false);
   
   const cleanPrice = stripHtml(priceDetail || "");
   const cleanAudience = stripHtml(audience || "Tout public");
 
-  // Synchronisation avec le Backend au chargement
   useEffect(() => {
     const checkStatus = async () => {
       try {
@@ -65,7 +64,6 @@ export const EventCard = ({
         });
         if (response.ok) {
           setIsReserved(false);
-          // MISE À JOUR RÉACTIVE : On prévient la page parente
           if (onUnreserve) {
             onUnreserve(id);
           }
@@ -77,7 +75,6 @@ export const EventCard = ({
       return;
     }
 
-    // Appel au Backend FastAPI avec l'ID et le TITRE
     try {
       const response = await fetch("http://127.0.0.1:8000/reservations", {
         method: "POST",
@@ -104,7 +101,8 @@ export const EventCard = ({
   };
 
   return (
-    <div className="bg-white rounded-[30px] shadow-sm overflow-hidden border border-gray-100 flex flex-col h-full">
+    /* AJOUT DE overflow-hidden ICI POUR RÉCUPÉRER LES ARRONDIS */
+    <div className="bg-white rounded-[30px] shadow-sm border border-gray-100 flex flex-col h-full overflow-hidden">
       <div className="relative h-48">
         {category && (
           <span className="absolute top-4 left-4 bg-brand-blue text-white text-[10px] px-3 py-1 rounded-full z-10 font-bold uppercase">
