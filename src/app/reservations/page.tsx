@@ -91,6 +91,9 @@ export default function ReservationsPage() {
                   price={event.price_type}
                   priceDetail={event.price_detail}
                   audience={event.audience}
+                  onUnreserve={(idToRemove) => {
+    setReservedEvents(prev => prev.filter(e => String(e.id || e.event_id) !== idToRemove));
+  }}
                 />
               ))}
             </div>
