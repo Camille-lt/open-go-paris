@@ -91,7 +91,7 @@ const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}`;
 
       if (data.status === "success") {
         setIsReserved(true);
-        alert(`🎉 ${title} ajouté à la base Neon !`);
+        alert(`🎉 ${title} ajouté aux réservations !`);
       } else if (data.status === "already_exists") {
         setIsReserved(true);
         alert("Déjà réservé.");
