@@ -6,7 +6,8 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
 export default function ReservationsPage() {
-const [reservedEvents, setReservedEvents] = useState<any[]>([]);  const [loading, setLoading] = useState(true);
+  const [reservedEvents, setReservedEvents] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -14,10 +15,15 @@ const [reservedEvents, setReservedEvents] = useState<any[]>([]);  const [loading
     const fetchReservedFromBackend = async () => {
       setLoading(true);
       try {
-        // 1. RÉCUPÉRATION DEPUIS TON BACKEND PYTHON (NEON)
-        const responseBack = await fetch("http://127.0.0.1:8000/reservations");
-        if (!responseBack.ok) throw new Error("Erreur Backend");
+        // GESTION DYNAMIQUE DE L'URL : 
+        // Utilise la variable Vercel si elle existe, sinon utilise le local
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
         
+        // 1. RÉCUPÉRATION DEPUIS TON BACKEND PYTHON (RENDER OU LOCAL)
+        const responseBack = await fetch(`${apiUrl}/reservations`);
+        
+        if (!responseBack.ok) throw new Error("Erreur Backend");
+      
         const savedIds: string[] = await responseBack.json();
         console.log("IDs récupérés depuis Neon :", savedIds);
 
@@ -84,8 +90,8 @@ const [reservedEvents, setReservedEvents] = useState<any[]>([]);  const [loading
                   priceDetail={event.price_detail}
                   audience={event.audience}
                   onUnreserve={(idToRemove) => {
-    setReservedEvents(prev => prev.filter(e => String(e.id || e.event_id) !== idToRemove));
-  }}
+                    setReservedEvents(prev => prev.filter(e => String(e.id || e.event_id) !== idToRemove));
+                  }}
                 />
               ))}
             </div>

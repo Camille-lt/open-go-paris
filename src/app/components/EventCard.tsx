@@ -36,13 +36,16 @@ export const EventCard = ({
 }: EventCardProps) => {
   const [isReserved, setIsReserved] = useState(false);
   
+  // GESTION DYNAMIQUE DE L'URL : Local si rien n'est défini, sinon Render
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+
   const cleanPrice = stripHtml(priceDetail || "");
   const cleanAudience = stripHtml(audience || "Tout public");
 
   useEffect(() => {
     const checkStatus = async () => {
       try {
-        const res = await fetch("http://127.0.0.1:8000/reservations");
+        const res = await fetch(`${apiUrl}/reservations`);
         const reservedIds: string[] = await res.json();
         if (reservedIds.includes(String(id))) {
           setIsReserved(true);
@@ -52,14 +55,14 @@ export const EventCard = ({
       }
     };
     checkStatus();
-  }, [id]);
+  }, [id, apiUrl]);
 
   const handleReserve = async () => {
     if (!id) return;
 
     if (isReserved) {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/reservations/${id}`, {
+        const response = await fetch(`${apiUrl}/reservations/${id}`, {
           method: "DELETE",
         });
         if (response.ok) {
@@ -76,7 +79,7 @@ export const EventCard = ({
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/reservations", {
+      const response = await fetch(`${apiUrl}/reservations`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
@@ -101,7 +104,6 @@ export const EventCard = ({
   };
 
   return (
-    /* AJOUT DE overflow-hidden ICI POUR RÉCUPÉRER LES ARRONDIS */
     <div className="bg-white rounded-[30px] shadow-sm border border-gray-100 flex flex-col h-full overflow-hidden">
       <div className="relative h-48">
         {category && (
