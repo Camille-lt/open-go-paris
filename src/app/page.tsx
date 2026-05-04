@@ -104,7 +104,7 @@ const filters = ['All', 'Théâtre', 'Balade urbaine', 'Concert', 'Sport & bien-
         </div>
       </header>
 
-      <main className="py-8">
+      <main className="py-8 pl-6 pr-6">
         {loading ? (
           <p className="text-center py-10 animate-pulse text-brand-blue font-bold">Chargement des pépites parisiennes...</p>
         ) : (
@@ -124,7 +124,7 @@ const filters = ['All', 'Théâtre', 'Balade urbaine', 'Concert', 'Sport & bien-
                     {category}
                   </h2>
                   <SimpleBar autoHide={false}>
-                    <div className="flex gap-6 px-6 pb-4">
+                    <div className="flex gap-6 pb-4">
                       {categoryEvents.map((event: any) => (
                         <div key={event.id || event.event_id} className="min-w-[280px] max-w-[280px]">
                           <EventCard
