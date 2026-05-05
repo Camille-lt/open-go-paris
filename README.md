@@ -1,8 +1,8 @@
 # 🚲 Open Go Paris - Frontend
 <img width="1371" height="712" alt="open-go-paris-dekstop" src="https://github.com/user-attachments/assets/d8b5f719-1e1b-42f1-bf89-4a81c1cf94ea" />
-<img width="290" height="626" alt="open-go-paris-mobile" src="https://github.com/user-attachments/assets/3715147e-1a1e-4615-be50-59a144bf928e" /><img width="292" height="626" alt="open-go-paris-mobile-2" src="https://github.com/user-attachments/assets/f1f89d04-fa34-4b54-be75-adcea033e114" />
-
-
+<img width="290" height="626" alt="open-go-paris-mobile" src="https://github.com/user-attachments/assets/3715147e-1a1e-4615-be50-59a144bf928e" />
+--> **Voir l'aplication** : https://open-go-paris.vercel.app/
+--> ** Repo back** : https://github.com/Camille-lt/open-go-paris-back/blob/main/README.md
 
 Application web interactive pour découvrir et réserver des activités à Paris en un clic.
 
